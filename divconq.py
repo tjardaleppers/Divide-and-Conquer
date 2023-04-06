@@ -71,9 +71,16 @@ class IntelDevice:
         Returns: the decoded message
         """
 
-        # TODO
-        raise NotImplementedError()
+        encoded_list = msg.split(' ')
+        decoded_message = '' 
 
+        for i in encoded_list:
+          ord_rep = int(i, 2)
+          shift_ord_rep = ord_rep - self.caesar_shift
+          letter = chr(shift_ord_rep)
+          decoded_message += letter
+
+        return decoded_message
 
     def fill_coordinate_to_loc(self):
         """
