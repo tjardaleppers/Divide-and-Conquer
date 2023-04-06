@@ -82,6 +82,7 @@ class IntelDevice:
 
         return decoded_message
 
+
     def fill_coordinate_to_loc(self):
         """
         Function that fills the data structure self.coordinate_to_location. It maps every (y,x) tuple in self.loc_grid
@@ -97,8 +98,15 @@ class IntelDevice:
         The function does not return anything. It simply fills the self.coordinate_to_location data structure with the right mapping.
         """
 
-        # TODO
-        raise NotImplementedError()
+        coordinates = []
+
+        for y in range(self.height):
+            for x in range(self.width):
+                coordinates.append((y, x)) # can also leave list out and directly append (y, x) as dict key
+        
+        for i, coordinate in enumerate(coordinates):
+            self.coordinate_to_location[coordinate] = self.decode_message(self.enc_locations[i])
+
 
     def fill_loc_grid(self):
         """
