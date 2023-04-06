@@ -49,8 +49,15 @@ class IntelDevice:
         Returns: the encoded message
         """
 
-        # TODO
-        raise NotImplementedError()
+        encoded_message = []
+
+        for i in msg:
+            ord_rep = ord(i)
+            shift_ord_rep = ord_rep + self.caesar_shift
+            bin_rep = '{0:b}'.format(shift_ord_rep)
+            encoded_message.append(bin_rep)
+        
+        return ' '.join(encoded_message) # return encoded message as a string with binary representation spaced outte
 
     
     def decode_message(self, msg: str) -> str:
