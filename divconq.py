@@ -121,7 +121,6 @@ class IntelDevice:
         The function does not return anything. It simply fills the self.loc_grid data structure with the decoded codes.
         """
 
-        # TODO
         raise NotImplementedError()
 
 
