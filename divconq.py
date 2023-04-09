@@ -159,6 +159,7 @@ class IntelDevice:
         """
         # TODO
         print(value)
+        print(value)
         raise NotImplementedError()
 
     def start_search(self, value) -> str:
