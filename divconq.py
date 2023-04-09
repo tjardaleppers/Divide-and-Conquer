@@ -153,6 +153,7 @@ class IntelDevice:
 
         """
         # TODO
+        print(value)
         raise NotImplementedError()
 
     def start_search(self, value) -> str:
@@ -177,4 +178,3 @@ class IntelDevice:
             return result
         else:
             return self.encode_message(self.coordinate_to_location[result])
-        
