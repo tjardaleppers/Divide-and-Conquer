@@ -158,9 +158,34 @@ class IntelDevice:
 
         """
         # TODO
-        print(value)
-        print(value)
-        raise NotImplementedError()
+
+        if x_from == x_to and y_from == y_to:  # if x_from is x_to and y_from is y_to, it is a cell
+            if value == int(self.loc_grid[x_from][y_from]):  # checks if the cell contains the value
+                return (y_from, x_from)  # returns the (y,x)-tuple
+            else:
+                return None
+
+        if x_from < x_to:
+            x_mid = (x_from + x_to) // 2
+
+            subgrid_result_1 = self.divconq_search(value, x_from, x_mid, y_from, y_to)
+            if subgrid_result_1 != None:
+                return subgrid_result_1
+
+            subgrid_result_2 = self.divconq_search(value, x_mid + 1, x_to, y_from, y_to)
+            if subgrid_result_2 != None:
+                return subgrid_result_2
+
+        else:
+            if y_from < y_to:
+                y_mid = (y_from + y_to) // 2
+                subgrid_1 = self.divconq_search(value, x_from, x_to, y_from, y_mid)
+                if subgrid_1 != None:
+                    return subgrid_1
+
+                subgrid_2 = self.divconq_search(value, x_from, x_to, y_from, y_mid)
+                if subgrid_2 != None:
+                    return subgrid_2
 
     def start_search(self, value) -> str:
         """
