@@ -123,8 +123,8 @@ class IntelDevice:
 
         k = 0 # separate enumerator for self.enc_codes that is not in grid-format
 
-        for i in range(self.width):
-          for j in range(self.height):
+        for i in range(self.height):
+          for j in range(self.width):
             self.loc_grid[i][j] = self.decode_message(self.enc_codes[k])
             k += 1
 
@@ -132,14 +132,14 @@ class IntelDevice:
     def divconq_search(self, value: int, x_from: int, x_to: int, y_from: int, y_to: int) -> typing.Tuple[int, int]:
         """
         The divide and conquer search function. The function searches for value in a subset of self.loc_grid.
-        More specifically, we only search in the x-region from x_from up to (and including) x_from and the y-region
-        from y_from up to (and including) y_to. At the initial function call, x_from=0, x_to=self.width-1, y_from=0, y_to=self.height-1 ,
+        More specifically, we only search in the x-region from x_from up to (and including) x_to and the y-region
+        from y_from up to (and including) y_to. At the initial function call, x_from=0, x_to=self.width-1, y_from=0, y_to=self.height-1,
         meaning that we search over the entire 2d grid self.loc. 
         This function recursively calls itself on smaller subproblems (subsets/subrectangles of the 2d grid) and combines the solutions
         to these subproblems in order to find the solution to the complete initial problem.
 
         Note: this function should be more efficient than a naive search that iterates over every cell until the value is found. 
-        Thus, make sure design a proper divide and conquer strategy for this. A too simplistic strategy (search over every cell in the grid) 
+        Thus, make sure to design a proper divide and conquer strategy for this. A too simplistic strategy (search over every cell in the grid) 
         will not lead to a passing grade. Please consult the TAs before handing in the assignment whether your approach is good. 
 
         :param value: The value that we are searching for in the subrectangle specified by (x_from, x_to, y_from, y_to)
@@ -157,35 +157,33 @@ class IntelDevice:
           A tuple (y,x) specifying the location where the value was found (if the value occurs in the subrectangle)
 
         """
-        # TODO
-
-        if x_from == x_to and y_from == y_to:  # if x_from is x_to and y_from is y_to, it is a cell
-            if value == int(self.loc_grid[y_from][x_from]):  # checks if the cell contains the value
-                return (y_from, x_from)  # returns the (y,x)-tuple
+      
+        if x_from == x_to and y_from == y_to:  # if x_from = x_to and y_from = y_to, it is a cell
+            if value == int(self.loc_grid[y_from][x_from]): 
+                return (y_from, x_from) 
             else:
                 return None
-
+        
         if x_from < x_to:
             x_mid = (x_from + x_to) // 2
 
-            subgrid_result_1 = self.divconq_search(value, x_from, x_mid, y_from, y_to)
-            if subgrid_result_1 != None:
-                return subgrid_result_1
+            subgrid_1 = self.divconq_search(value, x_from, x_mid, y_from, y_to)
+            if subgrid_1 != None:
+                return subgrid_1
 
-            subgrid_result_2 = self.divconq_search(value, x_mid + 1, x_to, y_from, y_to)
-            if subgrid_result_2 != None:
-                return subgrid_result_2
+            subgrid_2 = self.divconq_search(value, x_mid+1, x_to, y_from, y_to)
+            if subgrid_2 != None:
+                return subgrid_2
+        elif y_from < y_to:
+              y_mid = (y_from + y_to) // 2
+              subgrid_1 = self.divconq_search(value, x_from, x_to, y_from, y_mid)
+              if subgrid_1 != None:
+                  return subgrid_1
 
-        else:
-            if y_from < y_to:
-                y_mid = (y_from + y_to) // 2
-                subgrid_1 = self.divconq_search(value, x_from, x_to, y_from, y_mid)
-                if subgrid_1 != None:
-                    return subgrid_1
+              subgrid_2 = self.divconq_search(value, x_from, x_to, y_mid+1, y_to)
+              if subgrid_2 != None:
+                  return subgrid_2
 
-                subgrid_2 = self.divconq_search(value, x_from, x_to, y_mid+1, y_to)
-                if subgrid_2 != None:
-                    return subgrid_2
 
     def start_search(self, value) -> str:
         """
