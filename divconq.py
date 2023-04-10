@@ -160,7 +160,7 @@ class IntelDevice:
         # TODO
 
         if x_from == x_to and y_from == y_to:  # if x_from is x_to and y_from is y_to, it is a cell
-            if value == int(self.loc_grid[x_from][y_from]):  # checks if the cell contains the value
+            if value == int(self.loc_grid[y_from][x_from]):  # checks if the cell contains the value
                 return (y_from, x_from)  # returns the (y,x)-tuple
             else:
                 return None
@@ -183,7 +183,7 @@ class IntelDevice:
                 if subgrid_1 != None:
                     return subgrid_1
 
-                subgrid_2 = self.divconq_search(value, x_from, x_to, y_from, y_mid)
+                subgrid_2 = self.divconq_search(value, x_from, x_to, y_mid+1, y_to)
                 if subgrid_2 != None:
                     return subgrid_2
 
