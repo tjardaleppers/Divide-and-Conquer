@@ -121,12 +121,11 @@ class IntelDevice:
         The function does not return anything. It simply fills the self.loc_grid data structure with the decoded codes.
         """
 
-        k = 0 # separate enumerator for self.enc_codes that is not in grid-format
-
+        k = 0  # separate enumerator for self.enc_codes that is not in grid-format
         for i in range(self.height):
-          for j in range(self.width):
-            self.loc_grid[i][j] = self.decode_message(self.enc_codes[k])
-            k += 1
+            for j in range(self.width):
+                self.loc_grid[i][j] = self.decode_message(self.enc_codes[k])
+                k += 1
 
 
     def divconq_search(self, value: int, x_from: int, x_to: int, y_from: int, y_to: int) -> typing.Tuple[int, int]:

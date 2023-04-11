@@ -220,7 +220,7 @@ class TestIntelDevice(unittest.TestCase):
             "1101110 110011 110011"
         ]
 
-        ob = IntelDevice(4,3, enc_locations, enc_codes, 2)
+        ob = IntelDevice(4, 3, enc_locations, enc_codes, 2)
         ob.fill_coordinate_to_loc()
         ob.fill_loc_grid()
 
