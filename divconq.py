@@ -1,6 +1,7 @@
 import numpy as np
 import typing
 
+
 class IntelDevice:
     def __init__(self, width:int, height:int, enc_locations: typing.List[str], enc_codes:typing.List[str], caesar_shift: int):
         """
@@ -25,8 +26,7 @@ class IntelDevice:
         self.caesar_shift = caesar_shift
 
         self.loc_grid = np.zeros((height, width))
-        self.coordinate_to_location = dict() # maps locations (y,x) to their names 
-
+        self.coordinate_to_location = dict()  # maps locations (y,x) to their names
 
     def encode_message(self, msg:str) -> str:
         """
@@ -57,8 +57,7 @@ class IntelDevice:
             bin_rep = '{0:b}'.format(shift_ord_rep)
             encoded_message.append(bin_rep)
         
-        return ' '.join(encoded_message) # return encoded message as a string with binary representation spaced outte
-
+        return ' '.join(encoded_message)  # return encoded message as a string with binary representation spaced outte
 
     def decode_message(self, msg: str) -> str:
         """
@@ -75,13 +74,12 @@ class IntelDevice:
         decoded_message = '' 
 
         for i in encoded_list:
-          ord_rep = int(i, 2)
-          shift_ord_rep = ord_rep - self.caesar_shift
-          letter = chr(shift_ord_rep)
-          decoded_message += letter
+            ord_rep = int(i, 2)
+            shift_ord_rep = ord_rep - self.caesar_shift
+            letter = chr(shift_ord_rep)
+            decoded_message += letter
 
         return decoded_message
-
 
     def fill_coordinate_to_loc(self):
         """
@@ -107,7 +105,6 @@ class IntelDevice:
         for i, coordinate in enumerate(coordinates):
             self.coordinate_to_location[coordinate] = self.decode_message(self.enc_locations[i])
 
-
     def fill_loc_grid(self):
         """
         Function that fills the data structure self.loc_grid with the codes found in self.enc_codes. Note that
@@ -126,7 +123,6 @@ class IntelDevice:
             for j in range(self.width):
                 self.loc_grid[i][j] = self.decode_message(self.enc_codes[k])
                 k += 1
-
 
     def divconq_search(self, value: int, x_from: int, x_to: int, y_from: int, y_to: int) -> typing.Tuple[int, int]:
         """
@@ -157,6 +153,7 @@ class IntelDevice:
 
         """
 
+<<<<<<< HEAD
         if x_from == x_to and y_from == y_to:  # if x_from = x_to and y_from = y_to, it is a cell
             if value == int(self.loc_grid[y_from][x_from]): 
                 return (y_from, x_from) 
@@ -183,9 +180,26 @@ class IntelDevice:
         #         return subgrid_2
 
         elif x_from < x_to:
+=======
+        # this code checks if the (sub)grid that is searched is a single grid-point x_from = x_to and y_from = y_to
+        # if the value at these (y,x)-coordinates matches the target value then the coordinates will be returned
+        # otherwise None will be returned
+        if x_from == x_to and y_from == y_to:
+            if value == int(self.loc_grid[y_from][x_from]):
+                return (y_from, x_from)
+            else:
+                return None
+
+        # this code checks if the (sub)grid that is searched can be horizontally divided
+        # the middle of the horizontal space of the grid is calculated and
+        # the (sub)grid is recursively divided into 2 smaller (sub)grids
+
+        if x_from < x_to:
+>>>>>>> origin/main
             x_mid = (x_from + x_to) // 2
             value_x_mid = int(self.loc_grid[0][x_mid])
 
+<<<<<<< HEAD
             if value == value_x_mid:
                 subgrid = self.divconq_search(value, x_mid, x_mid, y_from, y_from)
                 if subgrid != None:
@@ -202,6 +216,29 @@ class IntelDevice:
         elif y_from < y_to:
             y_mid = (y_from + y_to) // 2
             value_y_mid = int(self.loc_grid[y_mid][0])
+=======
+            subgrid_1 = self.divconq_search(value, x_from, x_mid, y_from, y_to)
+            if subgrid_1 is not None:
+                return subgrid_1
+
+            subgrid_2 = self.divconq_search(value, x_mid+1, x_to, y_from, y_to)
+            if subgrid_2 is not None:
+                return subgrid_2
+
+        # this code checks if the (sub)grid that is searched can be vertically divided
+        # then the middle of the vertical space of the grid is calculated
+        # the (sub)grid is recursively divided into 2 smaller (sub)grids
+        elif y_from < y_to:
+             y_mid = (y_from + y_to) // 2
+
+             subgrid_1 = self.divconq_search(value, x_from, x_to, y_from, y_mid)
+             if subgrid_1 is not None:
+                 return subgrid_1
+
+             subgrid_2 = self.divconq_search(value, x_from, x_to, y_mid+1, y_to)
+             if subgrid_2 is not None:
+                return subgrid_2
+>>>>>>> origin/main
 
             if value == value_y_mid:
                 subgrid = self.divconq_search(value, x_from, x_from, y_mid, y_mid)
