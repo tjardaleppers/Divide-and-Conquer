@@ -15,14 +15,15 @@ from divconq import IntelDevice
 
 class PrivateTestIntelDevice(unittest.TestCase):
 
-    def test_encode_message(self):
+    def test_encode_empty_message(self):
 
         """
-        This unittest checks if the encode_message function correctly handles an empty string as a message
+        This unittest checks if the encode_message function correctly handles an empty string as a message.
         """
-        ob1 = IntelDevice(3, 5, [], [], 0)
-        answer = [None]
+
+        ob = IntelDevice(3, 5, [], [], 0)
+        solution = None
         query = [""]
 
         for query, answer in zip(query, answer):
-            self.assertEqual(ob1.encode_message(query), answer)
+            self.assertEqual(ob.encode_message(query), answer)

@@ -130,7 +130,7 @@ class IntelDevice:
 
     def divconq_search(self, value: int, x_from: int, x_to: int, y_from: int, y_to: int) -> typing.Tuple[int, int]:
         """
-        The divide and conquer search function. The function searches for value in a subset of self.loc_grid.
+        The divide and conquer search function. The function searches for a value in a subset of self.loc_grid.
         More specifically, we only search in the x-region from x_from up to (and including) x_to and the y-region
         from y_from up to (and including) y_to. At the initial function call, x_from=0, x_to=self.width-1, y_from=0, y_to=self.height-1,
         meaning that we search over the entire 2d grid self.loc. 
@@ -156,33 +156,66 @@ class IntelDevice:
           A tuple (y,x) specifying the location where the value was found (if the value occurs in the subrectangle)
 
         """
-      
+
         if x_from == x_to and y_from == y_to:  # if x_from = x_to and y_from = y_to, it is a cell
             if value == int(self.loc_grid[y_from][x_from]): 
                 return (y_from, x_from) 
             else:
                 return None
-        
-        if x_from < x_to:
+        # elif x_from < x_to:
+        #     x_mid = (x_from + x_to) // 2
+
+        #     subgrid_1 = self.divconq_search(value, x_from, x_mid, y_from, y_to)
+        #     if subgrid_1 != None:
+        #         return subgrid_1
+
+        #     subgrid_2 = self.divconq_search(value, x_mid+1, x_to, y_from, y_to)
+        #     if subgrid_2 != None:
+        #         return subgrid_2
+        # elif y_from < y_to:
+        #     y_mid = (y_from + y_to) // 2
+        #     subgrid_1 = self.divconq_search(value, x_from, x_to, y_from, y_mid)
+        #     if subgrid_1 != None:
+        #         return subgrid_1
+
+        #     subgrid_2 = self.divconq_search(value, x_from, x_to, y_mid+1, y_to)
+        #     if subgrid_2 != None:
+        #         return subgrid_2
+
+        elif x_from < x_to:
             x_mid = (x_from + x_to) // 2
+            value_x_mid = int(self.loc_grid[0][x_mid])
 
-            subgrid_1 = self.divconq_search(value, x_from, x_mid, y_from, y_to)
-            if subgrid_1 != None:
-                return subgrid_1
+            if value == value_x_mid:
+                subgrid = self.divconq_search(value, x_mid, x_mid, y_from, y_from)
+                if subgrid != None:
+                    return subgrid
+            elif value < value_x_mid:
+                subgrid = self.divconq_search(value, x_from, x_mid, y_from, y_to)
+                if subgrid != None:
+                    return subgrid
+            elif value > value_x_mid:
+                subgrid = self.divconq_search(value, x_mid, x_to, y_from, y_to)
+                if subgrid != None:
+                    return subgrid
 
-            subgrid_2 = self.divconq_search(value, x_mid+1, x_to, y_from, y_to)
-            if subgrid_2 != None:
-                return subgrid_2
         elif y_from < y_to:
-              y_mid = (y_from + y_to) // 2
-              subgrid_1 = self.divconq_search(value, x_from, x_to, y_from, y_mid)
-              if subgrid_1 != None:
-                  return subgrid_1
+            y_mid = (y_from + y_to) // 2
+            value_y_mid = int(self.loc_grid[y_mid][0])
 
-              subgrid_2 = self.divconq_search(value, x_from, x_to, y_mid+1, y_to)
-              if subgrid_2 != None:
-                  return subgrid_2
-
+            if value == value_y_mid:
+                subgrid = self.divconq_search(value, x_from, x_from, y_mid, y_mid)
+                if subgrid != None:
+                    return subgrid
+            elif value < value_x_mid:
+                subgrid = self.divconq_search(value, x_from, x_to, y_from, y_mid)
+                if subgrid != None:
+                    return subgrid
+            elif value > value_x_mid:
+                subgrid = self.divconq_search(value, x_from, x_to, y_mid, y_to)
+                if subgrid != None:
+                    return subgrid
+            
 
     def start_search(self, value) -> str:
         """
