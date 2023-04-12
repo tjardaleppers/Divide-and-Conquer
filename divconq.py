@@ -59,7 +59,7 @@ class IntelDevice:
         
         return ' '.join(encoded_message) # return encoded message as a string with binary representation spaced outte
 
-    
+
     def decode_message(self, msg: str) -> str:
         """
         A function that decodes an encoded message (the reverse of the function above). For example, given the encoded message 
@@ -102,7 +102,7 @@ class IntelDevice:
 
         for y in range(self.height):
             for x in range(self.width):
-                coordinates.append((y, x)) # can also leave list out and directly append (y, x) as dict key
+                coordinates.append((y, x))  # can also leave list out and directly append (y, x) as dict key
         
         for i, coordinate in enumerate(coordinates):
             self.coordinate_to_location[coordinate] = self.decode_message(self.enc_locations[i])
