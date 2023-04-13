@@ -152,107 +152,42 @@ class IntelDevice:
           A tuple (y,x) specifying the location where the value was found (if the value occurs in the subrectangle)
 
         """
+        x_mid = x_from + (x_to - x_from) // 2
+        y_mid = y_from + (y_to + y_from) // 2
 
-<<<<<<< HEAD
-        if x_from == x_to and y_from == y_to:  # if x_from = x_to and y_from = y_to, it is a cell
-            if value == int(self.loc_grid[y_from][x_from]): 
-                return (y_from, x_from) 
-            else:
-                return None
-        # elif x_from < x_to:
-        #     x_mid = (x_from + x_to) // 2
-
-        #     subgrid_1 = self.divconq_search(value, x_from, x_mid, y_from, y_to)
-        #     if subgrid_1 != None:
-        #         return subgrid_1
-
-        #     subgrid_2 = self.divconq_search(value, x_mid+1, x_to, y_from, y_to)
-        #     if subgrid_2 != None:
-        #         return subgrid_2
-        # elif y_from < y_to:
-        #     y_mid = (y_from + y_to) // 2
-        #     subgrid_1 = self.divconq_search(value, x_from, x_to, y_from, y_mid)
-        #     if subgrid_1 != None:
-        #         return subgrid_1
-
-        #     subgrid_2 = self.divconq_search(value, x_from, x_to, y_mid+1, y_to)
-        #     if subgrid_2 != None:
-        #         return subgrid_2
-
-        elif x_from < x_to:
-=======
-        # this code checks if the (sub)grid that is searched is a single grid-point x_from = x_to and y_from = y_to
-        # if the value at these (y,x)-coordinates matches the target value then the coordinates will be returned
-        # otherwise None will be returned
-        if x_from == x_to and y_from == y_to:
-            if value == int(self.loc_grid[y_from][x_from]):
-                return (y_from, x_from)
+        # check if the grid consists of a single cell
+        if x_to == x_from and y_to == y_from:
+            if value == int(self.loc_grid[y_from][x_to]):
+                return (y_from, y_to)
             else:
                 return None
 
-        # this code checks if the (sub)grid that is searched can be horizontally divided
-        # the middle of the horizontal space of the grid is calculated and
-        # the (sub)grid is recursively divided into 2 smaller (sub)grids
+        # check if value equals middle value in grid
+        if value == int(self.loc_grid[y_mid][x_mid]):
+            return (y_mid, x_mid)
 
-        if x_from < x_to:
->>>>>>> origin/main
-            x_mid = (x_from + x_to) // 2
-            value_x_mid = int(self.loc_grid[0][x_mid])
+        # if grid is of form 1x2, then only check second x value
+        elif x_from+1 == x_to and y_from == y_to:
+            if value == int(self.loc_grid[y_from][x_to]):
+                return (y_from, x_to)
 
-<<<<<<< HEAD
-            if value == value_x_mid:
-                subgrid = self.divconq_search(value, x_mid, x_mid, y_from, y_from)
-                if subgrid != None:
-                    return subgrid
-            elif value < value_x_mid:
-                subgrid = self.divconq_search(value, x_from, x_mid, y_from, y_to)
-                if subgrid != None:
-                    return subgrid
-            elif value > value_x_mid:
-                subgrid = self.divconq_search(value, x_mid, x_to, y_from, y_to)
-                if subgrid != None:
-                    return subgrid
+        # if grid is of form 2x1, the only check second y value
+        elif x_from == x_to and y_from+1 == y_to:
+            if value == int(self.loc_grid[y_to][x_from]):
+                return (y_to, x_from)
 
-        elif y_from < y_to:
-            y_mid = (y_from + y_to) // 2
-            value_y_mid = int(self.loc_grid[y_mid][0])
-=======
-            subgrid_1 = self.divconq_search(value, x_from, x_mid, y_from, y_to)
-            if subgrid_1 is not None:
-                return subgrid_1
+        else:
+            # search in right-top subgrid, independent of the comparison of the value with the middle value
+            return self.divconq_search(value, x_mid, x_to, y_from, y_mid)
 
-            subgrid_2 = self.divconq_search(value, x_mid+1, x_to, y_from, y_to)
-            if subgrid_2 is not None:
-                return subgrid_2
+            # search grid below middle if value is greater than middle
+            if value > int(self.loc_grid[y_mid][x_mid]):
+                return self.divconq_search(value, x_from, x_to, y_mid+1, y_to)
 
-        # this code checks if the (sub)grid that is searched can be vertically divided
-        # then the middle of the vertical space of the grid is calculated
-        # the (sub)grid is recursively divided into 2 smaller (sub)grids
-        elif y_from < y_to:
-             y_mid = (y_from + y_to) // 2
+            # search grid left of middle if value is less than middle
+            else:
+                return self.divconq_search(value, x_from, x_mid-1, y_from, y_to)
 
-             subgrid_1 = self.divconq_search(value, x_from, x_to, y_from, y_mid)
-             if subgrid_1 is not None:
-                 return subgrid_1
-
-             subgrid_2 = self.divconq_search(value, x_from, x_to, y_mid+1, y_to)
-             if subgrid_2 is not None:
-                return subgrid_2
->>>>>>> origin/main
-
-            if value == value_y_mid:
-                subgrid = self.divconq_search(value, x_from, x_from, y_mid, y_mid)
-                if subgrid != None:
-                    return subgrid
-            elif value < value_x_mid:
-                subgrid = self.divconq_search(value, x_from, x_to, y_from, y_mid)
-                if subgrid != None:
-                    return subgrid
-            elif value > value_x_mid:
-                subgrid = self.divconq_search(value, x_from, x_to, y_mid, y_to)
-                if subgrid != None:
-                    return subgrid
-            
 
     def start_search(self, value) -> str:
         """
