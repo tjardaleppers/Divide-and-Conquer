@@ -28,6 +28,7 @@ class IntelDevice:
         self.loc_grid = np.zeros((height, width))
         self.coordinate_to_location = dict()  # maps locations (y,x) to their names
 
+
     def encode_message(self, msg:str) -> str:
         """
         A function that encodes a given string using a simplified form of caesar cipher (without using modulo). Every character of the string will be 
@@ -59,6 +60,7 @@ class IntelDevice:
         
         return ' '.join(encoded_message)  # return encoded message as a string with binary representation spaced outte
 
+
     def decode_message(self, msg: str) -> str:
         """
         A function that decodes an encoded message (the reverse of the function above). For example, given the encoded message 
@@ -80,6 +82,7 @@ class IntelDevice:
             decoded_message += letter
 
         return decoded_message
+
 
     def fill_coordinate_to_loc(self):
         """
@@ -124,6 +127,7 @@ class IntelDevice:
                 self.loc_grid[i][j] = self.decode_message(self.enc_codes[k])
                 k += 1
 
+
     def divconq_search(self, value: int, x_from: int, x_to: int, y_from: int, y_to: int) -> typing.Tuple[int, int]:
         """
         The divide and conquer search function. The function searches for a value in a subset of self.loc_grid.
@@ -152,6 +156,10 @@ class IntelDevice:
           A tuple (y,x) specifying the location where the value was found (if the value occurs in the subrectangle)
 
         """
+
+        x_mid = (x_from + x_to) // 2
+        y_mid = (y_from + y_to) // 2
+
         # stop condition for recursion
         if x_from == x_to and y_from == y_to:
             if value == int(self.loc_grid[y_from][x_from]):
@@ -159,55 +167,48 @@ class IntelDevice:
             else:
                 return None
 
-        x_mid = (x_from+x_to)//2
-        y_mid = (y_from+y_to)//2
-
-
         if x_from == x_to and y_to - y_from >= 1:
             if value <= int(self.loc_grid[y_mid][x_mid]):
-                # Q0
-                result = self.divconq_search(value, x_from, x_mid, y_from, y_mid)
+                # upper grid (including midvalue)
+                result = self.divconq_search(value, x_from, x_to, y_from, y_mid)
                 if result != None:
                     return result
 
             else:
-                # Q2
-                result =self.divconq_search(value, x_from, x_mid, y_mid + 1, y_to)
+                # lower grid (excluding midvalue)
+                result = self.divconq_search(value, x_from, x_to, y_mid + 1, y_to)
                 if result != None:
                     return result
 
-        if x_to - x_from >= 1 and y_from == y_to:
+        elif x_to - x_from >= 1 and y_from == y_to:
             if value <= int(self.loc_grid[y_mid][x_mid]):
-                # Q0
-                result =self.divconq_search(value, x_from, x_mid, y_from, y_mid)
+                # left grid (including midvalue)
+                result = self.divconq_search(value, x_from, x_mid, y_from, y_to)
                 if result != None:
                     return result
             else:
-                # Q1
-                result = self.divconq_search(value, x_mid + 1, x_to, y_from, y_mid)
+                # right grid (excluding midvalue)
+                result = self.divconq_search(value, x_mid + 1, x_to, y_from, y_to)
                 if result != None:
                     return result
 
-        if x_to - x_from >= 1 and y_to - y_from >= 1:
-            # Q1
-            result = self.divconq_search(value, x_mid + 1, x_to, y_from, y_mid)
+        else:
+            # upper right grid (including midvalue)
+            result = self.divconq_search(value, x_mid, x_to, y_from, y_mid)
             if result != None:
-                    return result
-            # Q2
-            result = self.divconq_search(value, x_from, x_mid, y_mid + 1, y_to)
-            if result != None:
-                    return result
+                return result
 
             if value > int(self.loc_grid[y_mid][x_mid]):
-                # Q1
-                result = self.divconq_search(value, x_mid + 1, x_to, y_mid + 1, y_to)
+                # lower grid (excluding midvalue)
+                result = self.divconq_search(value, x_from, x_to, y_mid + 1, y_to)
                 if result != None:
                     return result
             else:
-                # Q0
-                result = self.divconq_search(value, x_from, x_mid, y_from, y_mid)
+                # left grid (including midvalue)
+                result = self.divconq_search(value, x_from, x_mid, y_from, y_to)
                 if result != None:
                     return result
+
 
     def start_search(self, value) -> str:
         """
