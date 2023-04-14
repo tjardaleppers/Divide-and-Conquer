@@ -124,5 +124,3 @@ class PrivateTestIntelDevice(unittest.TestCase):
         for v in [1, 3, 5, 7, 9]:
             result = ob.start_search(v)
             self.assertIsNone(result)
-
-
