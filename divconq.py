@@ -152,49 +152,68 @@ class IntelDevice:
           A tuple (y,x) specifying the location where the value was found (if the value occurs in the subrectangle)
 
         """
-        x_mid = x_from + (x_to - x_from) // 2  # calculating the x-value of the middle cell
-        y_mid = y_from + (y_to + y_from) // 2  # calculating the y-value of the middle cell
 
-        # checking if the grid consists of a single cell and if so checks whether the cell contains the value
-        # then the right coordinates get returned, otherwise None is returned
-        if x_to == x_from and y_to == y_from:
-            if value == int(self.loc_grid[y_from][x_to]):
-                return (y_from, y_to)
+        print("DEBUG/divconq_search:" "Value is", value, "(x_from is", x_from,
+                "x_to is", x_to, ") (y_from is", y_from,"y_to is", y_to, ")")
+
+        # stop condition for recursion
+        if x_from == x_to and y_from == y_to:
+            if value == int(self.loc_grid[y_from][x_from]):
+                return (y_from, x_from)
             else:
                 return None
 
-        # if the value we are looking for is in the grid, then there are three possibilities
-        # we are checking the first possibility: value is equal to the middle value of the grid
-        if value == int(self.loc_grid[y_mid][x_mid]):
-            return (y_mid, x_mid)
+        x_mid = (x_from+x_to)//2
+        y_mid = (y_from+y_to)//2
 
-        # now we will check the second option: value is smaller than the middle value
-        if value < int(self.loc_grid[y_mid][x_mid]):
-            # first we check the lower left of the grid
-            if x_mid != x_from:
-                lower_left_result = self.divconq_search(value, x_from, x_mid - 1, y_from, y_mid)
-                if lower_left_result != None:
-                    return lower_left_result
-            # if the value is not on the lower left of the grid, we look at the top of the grid
-            if y_mid != y_from:
-                upper_half_result = self.divconq_search(value, x_from, x_to, y_from, y_mid- 1)
-                if upper_half_result != None:
-                    return upper_half_result
-            return None
 
-        # lastly we check the third option: value is bigger than the middle value
-        elif value > int(self.loc_grid[y_mid][x_mid]):
-            # first we check the top right of the grid
-            if x_mid != x_to:
-                upper_right_result = self.divconq_search(value, x_mid + 1, x_to, y_from, y_mid)
-                if upper_right_result != None:
-                    return upper_right_result
-            # if the value is not on the top right of the grid, we look at the bottom of the grid
-            if y_mid != y_to:
-                lower_half_result = self.divconq_search(value, x_from, x_to, y_mid + 1, y_to)
-                if lower_half_result != None:
-                    return lower_half_result
-            return None
+        if x_from == x_to and y_to - y_from >= 1:
+            if value <= int(self.loc_grid[y_mid][x_mid]):
+                # Q0
+                result = self.divconq_search(value, x_from, x_mid, y_from, y_mid)
+                if result != None:
+                    return result
+
+            else:
+                # Q2
+                result =self.divconq_search(value, x_from, x_mid, y_mid + 1, y_to)
+                if result != None:
+                    return result
+
+        if x_to - x_from >= 1 and y_from == y_to:
+            if value <= int(self.loc_grid[y_mid][x_mid]):
+                # Q0
+                result =self.divconq_search(value, x_from, x_mid, y_from, y_mid)
+                if result != None:
+                    return result
+            else:
+                # Q1
+                result = self.divconq_search(value, x_mid + 1, x_to, y_from, y_mid)
+                if result != None:
+                    return result
+
+        if x_to - x_from >= 1 and y_to - y_from >= 1:
+            # Q1
+            result = self.divconq_search(value, x_mid + 1, x_to, y_from, y_mid)
+            if result != None:
+                    return result
+            # Q2
+            result = self.divconq_search(value, x_from, x_mid, y_mid + 1, y_to)
+            if result != None:
+                    return result
+
+            if value > int(self.loc_grid[y_mid][x_mid]):
+                # Q1
+                result = self.divconq_search(value, x_mid + 1, x_to, y_mid + 1, y_to)
+                if result != None:
+                    return result
+            else:
+                # Q0
+                result = self.divconq_search(value, x_from, x_mid, y_from, y_mid)
+                if result != None:
+                    return result
+
+
 
     def start_search(self, value) -> str:
         """
