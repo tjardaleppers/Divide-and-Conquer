@@ -129,13 +129,13 @@ class IntelDevice:
         The divide and conquer search function. The function searches for a value in a subset of self.loc_grid.
         More specifically, we only search in the x-region from x_from up to (and including) x_to and the y-region
         from y_from up to (and including) y_to. At the initial function call, x_from=0, x_to=self.width-1, y_from=0, y_to=self.height-1,
-        meaning that we search over the entire 2d grid self.loc. 
+        meaning that we search over the entire 2d grid self.loc.
         This function recursively calls itself on smaller subproblems (subsets/subrectangles of the 2d grid) and combines the solutions
         to these subproblems in order to find the solution to the complete initial problem.
 
-        Note: this function should be more efficient than a naive search that iterates over every cell until the value is found. 
-        Thus, make sure to design a proper divide and conquer strategy for this. A too simplistic strategy (search over every cell in the grid) 
-        will not lead to a passing grade. Please consult the TAs before handing in the assignment whether your approach is good. 
+        Note: this function should be more efficient than a naive search that iterates over every cell until the value is found.
+        Thus, make sure to design a proper divide and conquer strategy for this. A too simplistic strategy (search over every cell in the grid)
+        will not lead to a passing grade. Please consult the TAs before handing in the assignment whether your approach is good.
 
         :param value: The value that we are searching for in the subrectangle specified by (x_from, x_to, y_from, y_to)
         :param x_from: The leftmost x coordinate of the subrectangle that we are searching over
@@ -152,42 +152,49 @@ class IntelDevice:
           A tuple (y,x) specifying the location where the value was found (if the value occurs in the subrectangle)
 
         """
-        x_mid = x_from + (x_to - x_from) // 2
-        y_mid = y_from + (y_to + y_from) // 2
+        x_mid = x_from + (x_to - x_from) // 2  # calculating the x-value of the middle cell
+        y_mid = y_from + (y_to + y_from) // 2  # calculating the y-value of the middle cell
 
-        # check if the grid consists of a single cell
+        # checking if the grid consists of a single cell and if so checks whether the cell contains the value
+        # then the right coordinates get returned, otherwise None is returned
         if x_to == x_from and y_to == y_from:
             if value == int(self.loc_grid[y_from][x_to]):
                 return (y_from, y_to)
             else:
                 return None
 
-        # check if value equals middle value in grid
+        # if the value we are looking for is in the grid, then there are three possibilities
+        # we are checking the first possibility: value is equal to the middle value of the grid
         if value == int(self.loc_grid[y_mid][x_mid]):
             return (y_mid, x_mid)
 
-        # if grid is of form 1x2, then only check second x value
-        elif x_from+1 == x_to and y_from == y_to:
-            if value == int(self.loc_grid[y_from][x_to]):
-                return (y_from, x_to)
+        # now we will check the second option: value is smaller than the middle value
+        if value < int(self.loc_grid[y_mid][x_mid]):
+            # first we check the lower left of the grid
+            if x_mid != x_from:
+                lower_left_result = self.divconq_search(value, x_from, x_mid - 1, y_from, y_mid)
+                if lower_left_result != None:
+                    return lower_left_result
+            # if the value is not on the lower left of the grid, we look at the top of the grid
+            if y_mid != y_from:
+                upper_half_result = self.divconq_search(value, x_from, x_to, y_from, y_mid- 1)
+                if upper_half_result != None:
+                    return upper_half_result
+            return None
 
-        # if grid is of form 2x1, the only check second y value
-        elif x_from == x_to and y_from+1 == y_to:
-            if value == int(self.loc_grid[y_to][x_from]):
-                return (y_to, x_from)
-
-        else:
-            # search in right-top subgrid, independent of the comparison of the value with the middle value
-            return self.divconq_search(value, x_mid, x_to, y_from, y_mid)
-
-            # search grid below middle if value is greater than middle
-            if value > int(self.loc_grid[y_mid][x_mid]):
-                return self.divconq_search(value, x_from, x_to, y_mid+1, y_to)
-
-            # search grid left of middle if value is less than middle
-            else:
-                return self.divconq_search(value, x_from, x_mid-1, y_from, y_to)
-
+        # lastly we check the third option: value is bigger than the middle value
+        elif value > int(self.loc_grid[y_mid][x_mid]):
+            # first we check the top right of the grid
+            if x_mid != x_to:
+                upper_right_result = self.divconq_search(value, x_mid + 1, x_to, y_from, y_mid)
+                if upper_right_result != None:
+                    return upper_right_result
+            # if the value is not on the top right of the grid, we look at the bottom of the grid
+            if y_mid != y_to:
+                lower_half_result = self.divconq_search(value, x_from, x_to, y_mid + 1, y_to)
+                if lower_half_result != None:
+                    return lower_half_result
+            return None
 
     def start_search(self, value) -> str:
         """
