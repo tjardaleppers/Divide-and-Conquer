@@ -174,7 +174,6 @@ class TestIntelDevice(unittest.TestCase):
 
         shift = 2
 
-
         enc_locations = [
             "1101110 110010",
             "1101110 110011",
