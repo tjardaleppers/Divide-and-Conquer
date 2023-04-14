@@ -152,10 +152,6 @@ class IntelDevice:
           A tuple (y,x) specifying the location where the value was found (if the value occurs in the subrectangle)
 
         """
-
-        print("DEBUG/divconq_search:" "Value is", value, "(x_from is", x_from,
-                "x_to is", x_to, ") (y_from is", y_from,"y_to is", y_to, ")")
-
         # stop condition for recursion
         if x_from == x_to and y_from == y_to:
             if value == int(self.loc_grid[y_from][x_from]):
@@ -212,8 +208,6 @@ class IntelDevice:
                 result = self.divconq_search(value, x_from, x_mid, y_from, y_mid)
                 if result != None:
                     return result
-
-
 
     def start_search(self, value) -> str:
         """
